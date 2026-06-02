@@ -1,31 +1,43 @@
-const Reservation = require("../models/Reservation");
-const sendEmail = require("../utils/emailService");
-
-const formatTime = (time) => {
-
-  let [hours, minutes] = time.split(":");
-
-  hours = parseInt(hours);
-
-  const ampm = hours >= 12 ? "PM" : "AM";
-
-  hours = hours % 12;
-
-  hours = hours ? hours : 12;
-
-  return `${hours}:${minutes} ${ampm}`;
-};
-
 const createReservation = async (req, res) => {
   try {
+    const {
+      name,
+      email,
+      phone,
+      carModel,
+      serviceType,
+      date,
+      time,
+      message,
+    } = req.body;
 
-    const reservation = await Reservation.create(req.body);
+    // VALIDATION (IMPORTANT FOR PRODUCTION)
+    if (!name || !email || !carModel) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
 
+    const reservation = await Reservation.create({
+      name,
+      email,
+      phone,
+      carModel,
+      serviceType,
+      date,
+      time,
+      message,
+    });
+
+    // EMAIL USER (SAFE VERSION)
     // EMAIL TO USER
-    await sendEmail({
-      to: reservation.email,
-      subject: "Reservation Submitted Successfully",
-      text: `
+try {
+
+  await sendEmail({
+    to: reservation.email,
+    subject: "Reservation Submitted Successfully",
+    text: `
 Hello ${reservation.name},
 
 Your reservation has been received successfully.
@@ -34,38 +46,44 @@ Car Model: ${reservation.carModel}
 Service Type: ${reservation.serviceType}
 Date: ${reservation.date}
 Time: ${formatTime(reservation.time)}
-Message: ${reservation.message}
 
-A Customer Service Representative will respond to your enquiry within 24 hours. Thank you for choosing JOOGAD AUTOMART.
-      `,
-    });
+Thank you for choosing JOOGAD AUTOMART.
+    `,
+  });
+
+} catch (err) {
+
+  console.log("USER EMAIL FAILED:", err.message);
+
+}
 
     // EMAIL TO ADMIN
-    await sendEmail({
-      to: process.env.ADMIN_EMAIL,
-      subject: "New Reservation Received",
-      text: `
+try {
+
+  await sendEmail({
+    to: process.env.ADMIN_EMAIL,
+    subject: "New Reservation Received",
+    text: `
 New reservation submitted.
 
 Name: ${reservation.name}
 Email: ${reservation.email}
-Phone: ${reservation.phone}
-Car: ${reservation.carModel}
-Service: ${reservation.serviceType}
-Date: ${reservation.date}
-Time: ${reservation.time}
 Message: ${reservation.message}
       `,
-    });
+  });
 
+} catch (err) {
+
+  console.log("ADMIN EMAIL FAILED:", err.message);
+
+}
     res.status(201).json({
       success: true,
       reservation,
     });
 
   } catch (error) {
-
-    console.log(error);
+    console.log("RESERVATION ERROR:", error);
 
     res.status(500).json({
       success: false,
