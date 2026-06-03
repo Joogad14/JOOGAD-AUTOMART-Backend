@@ -1,6 +1,24 @@
 const Reservation = require("../models/Reservation");
 const sendEmail = require("../utils/emailService");
 
+const formatTime = (time) => {
+
+  if (!time) return "No time selected";
+
+  let [hours, minutes] = time.split(":");
+
+  hours = parseInt(hours);
+
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12;
+
+  hours = hours ? hours : 12;
+
+  return `${hours}:${minutes} ${ampm}`;
+};
+
+
 const createReservation = async (req, res) => {
   try {
     const {
