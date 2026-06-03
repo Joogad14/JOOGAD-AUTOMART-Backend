@@ -1,8 +1,8 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: Number(process.env.EMAIL_PORT),
+  host: "smtp-relay.brevo.com",
+  port: 587,
   secure: false,
   requireTLS: true,
 
@@ -10,6 +10,10 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 15000,
 
   tls: {
     rejectUnauthorized: false,
