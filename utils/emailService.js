@@ -1,14 +1,16 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.EMAIL_HOST,
+
+  port: process.env.EMAIL_PORT,
+
+  secure: false,
 
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-
-  connectionTimeout: 10000,
 });
 
 const sendEmail = async (options) => {
@@ -25,15 +27,11 @@ const sendEmail = async (options) => {
       text: options.text,
     });
 
-    console.log("Email sent successfully");
+    console.log("EMAIL SENT SUCCESSFULLY");
 
   } catch (error) {
 
     console.log("EMAIL ERROR:", error.message);
-
-    // IMPORTANT:
-    // prevent server crash
-    return;
   }
 };
 
