@@ -412,7 +412,7 @@ await user.save();
 
 // RESET URL
 const resetUrl =
-  `http://localhost:5173/reset-password/${resetToken}`;
+  `https://joogadautomart.netlify.app/reset-password/${resetToken}`;
 
 // SEND EMAIL
 sendEmail({
