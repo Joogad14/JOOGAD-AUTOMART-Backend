@@ -1,3 +1,6 @@
+const Reservation = require("../models/Reservation");
+const sendEmail = require("../utils/emailService");
+
 const createReservation = async (req, res) => {
   try {
     const {
