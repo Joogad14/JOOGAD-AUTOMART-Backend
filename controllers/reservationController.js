@@ -30,11 +30,11 @@ const createReservation = async (req, res) => {
       message,
     });
 
-    // EMAIL USER (SAFE VERSION)
+    
     // EMAIL TO USER
 try {
 
-  await sendEmail({
+   sendEmail({
     to: reservation.email,
     subject: "Reservation Submitted Successfully",
     text: `
@@ -60,7 +60,7 @@ Thank you for choosing JOOGAD AUTOMART.
     // EMAIL TO ADMIN
 try {
 
-  await sendEmail({
+  sendEmail({
     to: process.env.ADMIN_EMAIL,
     subject: "New Reservation Received",
     text: `

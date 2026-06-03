@@ -63,7 +63,7 @@ exports.registerUser = async (req, res) => {
           timeStyle: "short",
         });
 
-      await sendEmail({
+       sendEmail({
         to: user.email,
 
         subject: "🎉 Welcome to JOOGAD AUTOMART",
@@ -183,7 +183,7 @@ exports.loginUser = async (req, res) => {
       timeStyle: "short",
     });
 
-    await sendEmail({
+     sendEmail({
   to: user.email,
 
   subject: "🔐 New Login to Your Account",
@@ -305,7 +305,7 @@ exports.googleLogin = async (req, res) => {
       timeStyle: "short",
     });
 
-        await sendEmail({
+       sendEmail({
           to: user.email,
 
           subject:
@@ -415,7 +415,7 @@ const resetUrl =
   `http://localhost:5173/reset-password/${resetToken}`;
 
 // SEND EMAIL
-await sendEmail({
+sendEmail({
   to: user.email,
 
   subject: "🔐 Password Reset Request",
