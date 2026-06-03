@@ -1,26 +1,40 @@
 const nodemailer = require("nodemailer");
 
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+
+  connectionTimeout: 10000,
+});
+
 const sendEmail = async (options) => {
 
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  try {
 
-  await transporter.sendMail({
-    from: `"JOOGAD AUTOMART" <${process.env.EMAIL_USER}>`,
-    
-    to: options.to,
+    await transporter.sendMail({
+      from: `"JOOGAD AUTOMART" <${process.env.EMAIL_USER}>`,
 
-    subject: options.subject,
+      to: options.to,
 
-    text: options.text,
+      subject: options.subject,
 
-    html: options.html,
-  });
+      text: options.text,
+    });
+
+    console.log("Email sent successfully");
+
+  } catch (error) {
+
+    console.log("EMAIL ERROR:", error.message);
+
+    // IMPORTANT:
+    // prevent server crash
+    return;
+  }
 };
 
 module.exports = sendEmail;
